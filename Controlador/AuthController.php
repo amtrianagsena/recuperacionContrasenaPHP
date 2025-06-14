@@ -33,12 +33,20 @@ class AuthController
         $user = $usuario->obtenerPorEmail($email);
 
         if ($user) {
+            $nombre = $user['nombre'];
             $token = bin2hex(random_bytes(16));
             $expira = date('Y-m-d H:i:s', strtotime('+1 hour'));
             $usuario->guardarToken($email, $token, $expira);
 
             $link = "http://localhost:8080/recuperacion/index.php?c=Auth&a=reset&token=$token";
-            $html = "<h3>Recupera tu contraseña</h3><p><a href='$link'>$link</a></p>";
+            #$html = "<h3>Recupera tu contraseña</h3><p><a href='$link'>$link</a></p>";
+            $html = "
+            <h3>Hola $nombre,</h3>
+            <p>Hemos recibido una solicitud para recuperar tu contraseña.</p>
+            <p>Puedes restablecerla haciendo clic en el siguiente enlace:</p>
+            <p><a href='$link'>$link</a></p>
+            <p>Si no solicitaste esto, puedes ignorar este correo.</p>
+            <p>Gracias,<br>Equipo de soporte</p>";
 
             $res = enviarCorreo($email, "Recuperación de contraseña", $html);
 
@@ -50,6 +58,21 @@ class AuthController
         header("Location: index.php?c=Auth&a=recuperar&msg=$msg");
     }
 
+    private $pdo;
+
+    public function obtenerPorEmail($email)
+    {
+        try {
+            $sql = "SELECT * FROM usuarios WHERE email = :email";
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute(['email' => $email]);
+            return $stmt->fetch(PDO::FETCH_ASSOC); // Devuelve un array asociativo con los datos del usuario
+        } catch (PDOException $e) {
+            // Puedes mostrar o registrar el error
+            echo "Error al obtener el usuario por email: " . $e->getMessage();
+            return false;
+        }
+    }
     public function reset()
     {
         if (!isset($_GET['token'])) {

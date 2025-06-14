@@ -1,10 +1,12 @@
 <?php
+
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
 require_once 'vendor/autoload.php';
 
-function enviarCorreo($destino, $asunto, $mensaje) {
+function enviarCorreo($destino, $asunto, $mensaje)
+{
     $mail = new PHPMailer(true);
     try {
         $mail->isSMTP();
@@ -14,6 +16,8 @@ function enviarCorreo($destino, $asunto, $mensaje) {
         $mail->Password   = 'oyjq ozpg obib qdxt'; // contraseña o App Password
         $mail->SMTPSecure = 'tls';
         $mail->Port       = 587;
+        $mail->CharSet = 'UTF-8';         // Soporte de ñ y tildes
+        $mail->Encoding = 'base64';       // Opcional, mejora soporte de caracteres especiales
 
         $mail->setFrom('amtrianasena@gmail.com', 'Sistema recuperación');
         $mail->addAddress($destino);
@@ -27,5 +31,3 @@ function enviarCorreo($destino, $asunto, $mensaje) {
         return "Error: {$mail->ErrorInfo}";
     }
 }
-
-?>

@@ -51,6 +51,16 @@ class Usuario {
     }
     return false;
 }
+public function existeCorreo($email)
+{
+    $sql = "SELECT COUNT(*) FROM usuarios WHERE email = :email";
+    $stmt = $this->pdo->prepare($sql);
+    $stmt->execute(['email' => $email]);
+    $count = $stmt->fetchColumn();
+
+    return $count > 0;
+}
+
 
 }
 ?>

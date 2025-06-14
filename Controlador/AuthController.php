@@ -13,13 +13,33 @@ class AuthController
     {
         include 'Vista/auth/register.php';
     }
-
     public function registrarUsuario()
+    {
+        $nombre = $_POST['nombre'];
+        $email = $_POST['email'];
+        $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
+
+        $usuario = new Usuario();
+        if ($usuario->existeCorreo($email)) {
+            header("Location: index.php?c=Auth&a=registro&msg=correo_existe");
+            exit;
+        }
+
+        $resultado = $usuario->registrar($nombre, $email, $password);
+        if ($resultado) {
+            header("Location: index.php?c=Auth&a=registro&msg=registro_ok");
+        } else {
+            header("Location: index.php?c=Auth&a=registro&msg=error");
+        }
+    }
+
+
+    /*public function registrarUsuario()
     {
         $usuario = new Usuario();
         $usuario->registrar($_POST['nombre'], $_POST['email'], $_POST['password']);
         header("Location: index.php?c=Auth&a=login&msg=registro_ok");
-    }
+    }*/
 
     public function recuperar()
     {

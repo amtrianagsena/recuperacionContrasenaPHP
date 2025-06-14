@@ -1,0 +1,122 @@
+<?php
+require_once 'Modelo/Usuario.php';
+require_once 'config/email.php';
+
+class AuthController
+{
+    public function login()
+    {
+        include 'Vista/auth/login.php';
+    }
+
+    public function registro()
+    {
+        include 'Vista/auth/register.php';
+    }
+
+    public function registrarUsuario()
+    {
+        $usuario = new Usuario();
+        $usuario->registrar($_POST['nombre'], $_POST['email'], $_POST['password']);
+        header("Location: index.php?c=Auth&a=login&msg=registro_ok");
+    }
+
+    public function recuperar()
+    {
+        include 'Vista/auth/recover.php';
+    }
+
+    public function enviarRecuperacion()
+    {
+        $usuario = new Usuario();
+        $email = $_POST['email'];
+        $user = $usuario->obtenerPorEmail($email);
+
+        if ($user) {
+            $token = bin2hex(random_bytes(16));
+            $expira = date('Y-m-d H:i:s', strtotime('+1 hour'));
+            $usuario->guardarToken($email, $token, $expira);
+
+            $link = "http://localhost:8080/recuperacion/index.php?c=Auth&a=reset&token=$token";
+            $html = "<h3>Recupera tu contraseña</h3><p><a href='$link'>$link</a></p>";
+
+            $res = enviarCorreo($email, "Recuperación de contraseña", $html);
+
+            $msg = $res === true ? 'correo_enviado' : 'error_correo';
+        } else {
+            $msg = 'correo_desconocido';
+        }
+
+        header("Location: index.php?c=Auth&a=recuperar&msg=$msg");
+    }
+
+    public function reset()
+    {
+        if (!isset($_GET['token'])) {
+            echo "Token no proporcionado.";
+            exit;
+        }
+        $token = $_GET['token'];
+
+        $usuario = new Usuario();
+        $user = $usuario->verificarToken($token); // Método que busca el token en la BD y valida expiración
+
+        if ($user) {
+            // Si el token es válido, se muestra el formulario
+            include 'Vista/auth/reset.php';
+        } else {
+            // Si no, se muestra mensaje de error
+            echo "Token inválido o expirado.";
+        }
+    }
+
+
+    public function actualizarPassword()
+    {
+        $usuario = new Usuario();
+        $user = $usuario->verificarToken($_POST['token']);
+        if ($user) {
+            $usuario->actualizarPassword($user['id'], $_POST['password']);
+            header("Location: index.php?c=Auth&a=login&msg=password_actualizada");
+        } else {
+            echo "Token inválido o expirado.";
+        }
+    }
+
+    /**nuevo */
+    public function loginPost()
+    {
+        $correo = $_POST['correo'];
+        $clave = $_POST['clave'];
+
+        $usuario = new Usuario();
+        $user = $usuario->verificarLogin($correo, $clave);
+
+        if ($user) {
+            session_start();
+            $_SESSION['usuario'] = $user;
+            header("Location: index.php?c=Auth&a=perfil");
+        } else {
+            $mensaje = "Correo o contraseña incorrectos";
+            include 'Vista/auth/login.php';
+        }
+    }
+
+    public function perfil()
+    {
+        session_start();
+        if (!isset($_SESSION['usuario'])) {
+            header("Location: index.php?c=Auth&a=login");
+            exit;
+        }
+        $usuario = $_SESSION['usuario'];
+        include 'Vista/auth/perfil.php'; // o como quieras nombrar la vista del usuario
+    }
+
+    public function logout()
+    {
+        session_start();
+        session_destroy();
+        header("Location: index.php?c=Auth&a=login&msg=logout");
+    }
+}

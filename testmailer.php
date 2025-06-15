@@ -5,5 +5,3 @@ use PHPMailer\PHPMailer\PHPMailer;
 
 $mail = new PHPMailer();
 echo 'PHPMailer cargado correctamente';
-
-?>

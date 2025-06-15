@@ -12,14 +12,14 @@ function enviarCorreo($destino, $asunto, $mensaje)
         $mail->isSMTP();
         $mail->Host       = 'smtp.gmail.com';
         $mail->SMTPAuth   = true;
-        $mail->Username   = 'solsolecito.sw@gmail.com'; // tu correo
-        $mail->Password   = 'jnwq xdkb rpyj nnya'; // contraseña o App Password
+        $mail->Username   = 'solsolecito@mail.com'; // tu correo
+        $mail->Password   = 'jnwq xdkb rpjj nnaa'; // contraseña o App Password
         $mail->SMTPSecure = 'tls';
         $mail->Port       = 587;
         $mail->CharSet = 'UTF-8';         // Soporte de ñ y tildes
         $mail->Encoding = 'base64';       // Opcional, mejora soporte de caracteres especiales
 
-        $mail->setFrom('solsolecito.sw@gmail.com', 'Sistema de recuperación');
+        $mail->setFrom('solsolecito@mail.com', 'Sistema de recuperación');
         $mail->addAddress($destino);
         $mail->isHTML(true);
         $mail->Subject = $asunto;

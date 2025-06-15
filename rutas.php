@@ -18,4 +18,3 @@ if (file_exists($archivo)) {
 } else {
     echo "No se encontró el archivo del controlador: $archivo";
 }
-?>

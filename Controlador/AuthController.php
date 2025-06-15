@@ -32,15 +32,6 @@ class AuthController
             header("Location: index.php?c=Auth&a=registro&msg=error");
         }
     }
-
-
-    /*public function registrarUsuario()
-    {
-        $usuario = new Usuario();
-        $usuario->registrar($_POST['nombre'], $_POST['email'], $_POST['password']);
-        header("Location: index.php?c=Auth&a=login&msg=registro_ok");
-    }*/
-
     public function recuperar()
     {
         include 'Vista/auth/recover.php';

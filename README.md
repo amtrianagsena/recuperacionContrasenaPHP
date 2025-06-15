@@ -1,3 +1,5 @@
+#Ejemplo de lo que veras: https://www.loom.com/share/93ff53dff5314f2dbc8e30a251ee5cda?sid=967d7f8c-7aef-4ce1-aa29-3d5ca93abaea 
+
 #Configuración de PHPMailer con Gmail
 
 ##Instalación con Composer
@@ -35,6 +37,6 @@ Usa una cuenta de Gmail dedicada solo para el proyecto.
 
 No publiques tus contraseñas ni las subas a repositorios.
 
-Agrega vendor/ a tu .gitignore si no deseas subir dependencias.
+
 
 

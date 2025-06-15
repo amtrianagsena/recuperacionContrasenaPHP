@@ -10,12 +10,21 @@ class Usuario
         $this->pdo = Database::conectar();
     }
 
+    public function registrar($nombre, $email, $passwordPlano)
+    {
+        $passwordHash = password_hash($passwordPlano, PASSWORD_DEFAULT);
+        $sql = "INSERT INTO usuarios (nombre, email, password) VALUES (?, ?, ?)";
+        $stmt = $this->pdo->prepare($sql);
+        return $stmt->execute([$nombre, $email, $passwordHash]);
+    }
+
+    /*
     public function registrar($nombre, $email, $password)
     {
         $sql = "INSERT INTO usuarios (nombre, email, password) VALUES (?, ?, ?)";
         $stmt = $this->pdo->prepare($sql);
-        return $stmt->execute([$nombre, $email, password_hash($password, PASSWORD_DEFAULT)]);
-    }
+        return $stmt->execute([$nombre, $email, $password]);
+    }*/
 
     public function obtenerPorEmail($email)
     {

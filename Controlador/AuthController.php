@@ -17,7 +17,8 @@ class AuthController
     {
         $nombre = $_POST['nombre'];
         $email = $_POST['email'];
-        $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
+        #$password = password_hash($_POST['password'], PASSWORD_DEFAULT);
+        $password = $_POST['password'];
 
         $usuario = new Usuario();
         if ($usuario->existeCorreo($email)) {
@@ -32,6 +33,7 @@ class AuthController
             header("Location: index.php?c=Auth&a=registro&msg=error");
         }
     }
+
     public function recuperar()
     {
         include 'Vista/auth/recover.php';
